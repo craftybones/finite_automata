@@ -1,4 +1,4 @@
-(ns finite-automata.core-dfa-test
+(ns finite-automata.dfa-test
   (:require [clojure.test :refer :all]
             [finite-automata.core :refer :all]))
 
@@ -66,4 +66,10 @@
       (let [d (dfa-of ends-with-one)]
         (is (true? (d "1")))
         (is (true? (d "01")))
-        (is (false? (d "0")))))))
+        (is (true? (d "11")))
+        (is (true? (d "101")))
+        (is (true? (d "1011")))
+        (is (false? (d "0")))
+        (is (false? (d "00")))
+        (is (false? (d "10")))
+        (is (false? (d "010")))))))
