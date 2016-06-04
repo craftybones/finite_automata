@@ -43,6 +43,17 @@
    :start-state :q1
    :final-states #{:q2}})
 
+(def alternating-zeroes-beginning-with-zero
+  {:delta {:q1 {0 #{:q2}} :q2 {0 #{:q1} 1 #{:q1}}}
+   :start-state :q1
+   :final-states #{:q2}})
+
+(def zeroes-followed-by-ones
+  {:delta {:q1 {0 #{:q1} :ε #{:q2}} :q2 {1 #{:q2}}}
+   :start-state :q1
+   :final-states #{:q2}})
+
+
 (deftest nfa-test
   (testing "single state nfa"
     (testing "any string"
@@ -76,4 +87,24 @@
         (is (true? (n "1011")))
         (is (true? (n "10")))
         (is (false? (n "100")))
-        (is (false? (n "1001")))))))
+        (is (false? (n "1001")))))
+    (testing "alternating zeroes beginning with zero"
+      (let [n (nfa-of alternating-zeroes-beginning-with-zero)]
+        (is (true? (n "0")))
+        (is (true? (n "010")))
+        (is (true? (n "000")))
+        (is (true? (n "01000")))
+        (is (true? (n "01010"))))))
+  (testing "two state nfa with epsilons"
+    (testing "zeroes followed by ones"
+      (let [n (nfa-of zeroes-followed-by-ones)]
+        (is (true? (n "0")))
+        (is (true? (n "01")))
+        (is (true? (n "00")))
+        (is (true? (n "001")))
+        (is (true? (n "0011")))
+        (is (true? (n "1")))
+				(is (true? (n "11")))
+        (is (false? (n "10")))
+        (is (false? (n "010")))
+        (is (false? (n "00110")))))))
