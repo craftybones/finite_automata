@@ -27,22 +27,3 @@
             reducer (state-set-reducer from-delta)]
         (cset/subset? final-states
                       (reduce reducer init-states letters))))))
-
-(def alphabet #{0 1})
-(def q #{:q1 :q2})
-(def final-states #{:q1})
-(def delta {:q1 {0 :q2 1 :q1} :q2 {0 :q2 1 :q1}})
-
-(def ending-with-1 (dfa q alphabet delta :q1 final-states))
-
-(def nfa-delta {:q1 {0 #{:q1} 1 #{:q1 :q2}} :q2 {1 #{:q3}}})
-(def nfa-final-states #{:q3})
-
-(def ending-with-two-ones (nfa q alphabet nfa-delta :q1 nfa-final-states))
-
-(def nfa-epsilon-delta {:q1 {:ε #{:q2 :q3}} :q2 {0 #{:q2}} :q3 {1 #{:q3}}})
-
-(def nfa-episilon-final-states #{:q2 :q3})
-
-(def only-zeroes-or-ones?
-  (nfa q alphabet nfa-epsilon-delta :q1 nfa-episilon-final-states))
