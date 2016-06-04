@@ -46,8 +46,11 @@
     (testing "at least one zero"
       (let [d (dfa-of at-least-one-zero)]
         (is (true? (d "0")))
-        (is (false? (d "1")))
         (is (true? (d "10")))
+        (is (true? (d "00")))
+        (is (true? (d "010")))
+        (is (true? (d "01")))
+        (is (false? (d "1")))
         (is (false? (d "11")))))
     (testing "even number of zeroes"
       (let [d (dfa-of even-number-of-zeroes)]
