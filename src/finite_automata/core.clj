@@ -1,7 +1,6 @@
 (ns finite-automata.core
   (:require [clojure.set :as cset]
-            [clojure.string :as str]
-            [clojure.math.combinatorics :as combi])
+            [clojure.string :as str])
   (:gen-class))
 
 (def char-to-digit (comp read-string str))
@@ -9,7 +8,9 @@
 (defn state-set-reducer [from-delta]
   (fn [current-states letter]
     (apply cset/union
-           (map #(from-delta [%1 letter]) current-states))))
+      (map #(cset/union
+             (from-delta [%1 letter])
+             (from-delta [%1 :ε])) current-states))))
 
 (defn dfa [q alphabet delta q0 final-states]
   (let [from-delta (partial get-in delta)]
@@ -38,3 +39,10 @@
 (def nfa-final-states #{:q3})
 
 (def ending-with-two-ones (nfa q alphabet nfa-delta :q1 nfa-final-states))
+
+(def nfa-epsilon-delta {:q1 {:ε #{:q2 :q3}} :q2 {0 #{:q2}} :q3 {1 #{:q3}}})
+
+(def nfa-episilon-final-states #{:q2 :q3})
+
+(def only-zeroes-or-ones?
+  (nfa q alphabet nfa-epsilon-delta :q1 nfa-episilon-final-states))
