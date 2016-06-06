@@ -6,6 +6,8 @@
 
 (def alphabet-set #{0 1})
 
+(defn from-delta-of [tuple] (partial get-in (:delta tuple)))
+
 (def nfa-with (partial apply (partial nfa states alphabet-set)))
 
 (defn tuple-from-map [{:keys [delta start-state final-states]}]
@@ -52,6 +54,18 @@
   {:delta {:q1 {0 #{:q1} :ε #{:q2}} :q2 {1 #{:q2}}}
    :start-state :q1
    :final-states #{:q2}})
+
+(def zeroes-or-ones
+  {:delta {:q1 {:ε #{:q2 :q3}} :q2 {1 #{:q2}} :q3 {1 #{:q3}}}
+   :start-state :q1
+   :final-states #{:q2 :q3}})
+
+(deftest epsilon-test
+  (testing "single epsilon transition between two states"
+    (let [from-delta (from-delta-of zeroes-followed-by-ones)
+          epsilons (partial all-epsilon-states from-delta)]
+      (is (= #{:q2 :q1} (epsilons #{:q1})))
+      (is (= #{:q2} (epsilons #{:q2}))))))
 
 
 (deftest nfa-test
@@ -107,4 +121,13 @@
 				(is (true? (n "11")))
         (is (false? (n "10")))
         (is (false? (n "010")))
-        (is (false? (n "00110")))))))
+        (is (false? (n "00110"))))))
+  (testing "multiple state nfas"
+    (testing "zeros or ones"
+      (let [n (nfa-of zeroes-or-ones)]
+        (is (true? (n "1")))
+        (is (true? (n "0")))
+        (is (true? (n "11")))
+        (is (true? (n "00")))
+        (is (false? (n "10")))
+        (is (false? (n "01")))))))
