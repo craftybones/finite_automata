@@ -30,12 +30,12 @@
 
 (defn nfa [q alphabet delta q0 final-states]
   (let [from-delta (partial get-in delta)
-        epsilon-states (partial all-epsilon-states from-delta)]
+        epsilon-states (partial all-epsilon-states from-delta)
+        reducer (state-set-reducer from-delta)
+        epsilon-reducer (comp epsilon-states reducer)]
     (fn [string]
       (let [letters (to-digits string)
-            init-states (epsilon-states #{q0})
-            reducer (state-set-reducer from-delta)
-            epsilon-reducer (comp epsilon-states reducer)]
+            init-states (epsilon-states #{q0})]
         (intersects?
           (reduce epsilon-reducer init-states letters)
           final-states)))))

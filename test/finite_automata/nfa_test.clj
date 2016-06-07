@@ -72,14 +72,24 @@
    :start-state :q1
    :final-states #{:q2 :q3}})
 
+(def circular-epslion-transitions
+  {:delta {:q1 {:ε #{:q2}} :q2 {:ε #{:q3}} :q3 {:ε #{:q1}}}
+   :start-state :q1
+   :final-states #{:q2 :q3}})
+
+
 (deftest epsilon-test
   (testing "single epsilon transition between two states"
     (let [from-delta (from-delta-of zeroes-followed-by-ones)
           epsilons (partial all-epsilon-states from-delta)]
       (is (= #{:q2 :q1} (epsilons #{:q1})))
       (is (= #{:q2} (epsilons #{:q2})))))
-  (testing "recursive epsilon transitions"
+  (testing "multiple epsilon transitions"
     (let [from-delta (from-delta-of recursive-epslion-transitions)
+          epsilons (partial all-epsilon-states from-delta)]
+      (is (= #{:q1 :q2 :q3} (epsilons #{:q1})))))
+  (testing "circular epsilon transitions"
+    (let [from-delta (from-delta-of circular-epslion-transitions)
           epsilons (partial all-epsilon-states from-delta)]
       (is (= #{:q1 :q2 :q3} (epsilons #{:q1}))))))
 
