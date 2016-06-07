@@ -7,31 +7,39 @@
 (def to-digits (partial map char-to-digit))
 (def intersects? (comp not empty? cset/intersection))
 
-(defn epsilons-of [from-delta states]
-  (apply cset/union (map #(from-delta [%1 :ε]) states)))
+(defn transition-fn [delta]
+  (fn [& args]
+    (get-in delta args)))
 
-(defn all-epsilon-states [from-delta states]
-  (let [epsilons (epsilons-of from-delta states)]
+(defn rtransition-fn [delta]
+  (fn [& args]
+    (get-in delta (reverse args))))
+
+(defn epsilons-of [transition states]
+  (apply cset/union (map (partial transition :ε) states)))
+
+(defn all-epsilon-states [transition states]
+  (let [epsilons (epsilons-of transition states)]
     (if (cset/subset? epsilons states)
       states
-      (recur from-delta (cset/union states epsilons)))))
+      (recur transition (cset/union states epsilons)))))
 
-(defn state-set-reducer [from-delta]
+(defn state-set-reducer [transition]
   (fn [current-states letter]
     (apply cset/union
-      (map #(from-delta [%1 letter]) current-states))))
+      (map (partial transition letter) current-states))))
 
 (defn dfa [q alphabet delta q0 final-states]
-  (let [from-delta (partial get-in delta)]
+  (let [tran (transition-fn delta)]
     (fn [string]
       (let [letters (to-digits string)]
         (contains? final-states
-          (reduce #(from-delta [%1 %2]) q0 letters))))))
+          (reduce tran q0 letters))))))
 
 (defn nfa [q alphabet delta q0 final-states]
-  (let [from-delta (partial get-in delta)
-        epsilon-states (partial all-epsilon-states from-delta)
-        reducer (state-set-reducer from-delta)
+  (let [transition (rtransition-fn delta)
+        epsilon-states (partial all-epsilon-states transition)
+        reducer (state-set-reducer transition)
         epsilon-reducer (comp epsilon-states reducer)]
     (fn [string]
       (let [letters (to-digits string)

@@ -6,7 +6,7 @@
 
 (def alphabet-set #{0 1})
 
-(defn from-delta-of [tuple] (partial get-in (:delta tuple)))
+(defn from-delta-of [tuple] (rtransition-fn (:delta tuple)))
 
 (def nfa-with (partial apply (partial nfa states alphabet-set)))
 
@@ -80,8 +80,8 @@
 
 (deftest epsilon-test
   (testing "single epsilon transition between two states"
-    (let [from-delta (from-delta-of zeroes-followed-by-ones)
-          epsilons (partial all-epsilon-states from-delta)]
+    (let [transition (from-delta-of zeroes-followed-by-ones)
+          epsilons (partial all-epsilon-states transition)]
       (is (= #{:q2 :q1} (epsilons #{:q1})))
       (is (= #{:q2} (epsilons #{:q2})))))
   (testing "multiple epsilon transitions"
