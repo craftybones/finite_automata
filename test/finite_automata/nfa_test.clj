@@ -56,7 +56,7 @@
    :final-states #{:q2}})
 
 (def zeroes-or-ones
-  {:delta {:q1 {:ε #{:q2 :q3}} :q2 {1 #{:q2}} :q3 {1 #{:q3}}}
+  {:delta {:q1 {:ε #{:q2 :q3}} :q2 {0 #{:q2}} :q3 {1 #{:q3}}}
    :start-state :q1
    :final-states #{:q2 :q3}})
 

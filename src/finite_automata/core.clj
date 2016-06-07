@@ -5,6 +5,7 @@
 
 (def char-to-digit (comp read-string str))
 (def to-digits (partial map char-to-digit))
+(def not-empty? (complement empty?))
 
 (defn all-epsilon-states [from-delta states]
   (cset/union states
@@ -27,8 +28,9 @@
         epsilon-states (partial all-epsilon-states from-delta)]
     (fn [string]
       (let [letters (to-digits string)
-            init-states #{q0}
+            init-states (epsilon-states #{q0})
             reducer (state-set-reducer from-delta)
-            epsilon-reducer (comp epsilon-states reducer epsilon-states)]
-        (cset/subset? final-states
-                      (reduce epsilon-reducer init-states letters))))))
+            epsilon-reducer (comp epsilon-states reducer)]
+        (not-empty? (cset/intersection
+                     (reduce epsilon-reducer init-states letters)
+                     final-states))))))
