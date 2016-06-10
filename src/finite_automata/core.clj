@@ -24,10 +24,15 @@
       states
       (recur transition (cset/union states epsilons)))))
 
+(defn states-reachable-from [transition current-states letter]
+  (apply cset/union
+    (map (partial transition letter) current-states)))
+
 (defn state-set-reducer [transition]
-  (fn [current-states letter]
-    (apply cset/union
-      (map (partial transition letter) current-states))))
+  (let [epsilons (partial all-epsilon-states transition)
+        reachable-from (partial states-reachable-from transition)]
+    (fn [current-states letter]
+      (epsilons (reachable-from current-states letter)))))
 
 (defn dfa [q alphabet delta q0 final-states]
   (let [tran (transition-fn delta)]
@@ -39,11 +44,10 @@
 (defn nfa [q alphabet delta q0 final-states]
   (let [transition (rtransition-fn delta)
         epsilon-states (partial all-epsilon-states transition)
-        reducer (state-set-reducer transition)
-        epsilon-reducer (comp epsilon-states reducer)]
+        init-states (epsilon-states #{q0})
+        reducer (state-set-reducer transition)]
     (fn [string]
-      (let [letters (to-digits string)
-            init-states (epsilon-states #{q0})]
+      (let [letters (to-digits string)]
         (intersects?
-          (reduce epsilon-reducer init-states letters)
+          (reduce reducer init-states letters)
           final-states)))))

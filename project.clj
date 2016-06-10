@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/math.combinatorics "0.1.1"]
                  [cheshire "5.6.1"]]
-  :main ^:skip-aot finite-automata.core
+  :main ^:skip-aot finite-automata.test-examples
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})
