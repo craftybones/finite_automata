@@ -3,7 +3,7 @@
             [finite-automata.core :refer :all]
             [finite-automata.nfa-dfa :refer :all]))
 
-(def states #{:q1})
+(def states #{:q1 :q2 :q3 :q4 :q5})
 
 (def alphabet-set #{0 1})
 
@@ -78,9 +78,79 @@
    :start-state :q1
    :final-states #{:q2 :q3}})
 
-
 (deftest nfa-test
   (testing "single state nfa"
     (testing "any string"
       (let [n (nfa-of any-string)]
-        (is (= 1 1))))))
+        (is (true? (n "")))
+        (is (true? (n "0")))
+        (is (true? (n "1")))
+        (is (true? (n "00")))))
+    (testing "only zeroes"
+      (let [n (nfa-of only-zeroes)]
+        (is (true? (n "")))
+        (is (true? (n "0")))
+        (is (true? (n "00")))
+        (is (true? (n "000")))
+        (is (false? (n "1")))
+        (is (false? (n "01"))))))
+  (testing "two state nfa(no epsilons)"
+    (testing "zeroes ending with single one"
+      (let [n (nfa-of zeroes-ending-with-single-one)]
+        (is (true? (n "1")))
+        (is (true? (n "01")))
+        (is (true? (n "001")))
+        (is (false? (n "0")))
+        (is (false? (n "11")))
+        (is (false? (n "101")))
+        (is (false? (n "0011")))))
+    (testing "zero sandwich"
+      (let [n (nfa-of single-zero-sandwich)]
+        (is (true? (n "101")))
+        (is (true? (n "1101")))
+        (is (true? (n "1011")))
+        (is (true? (n "10")))
+        (is (false? (n "100")))
+        (is (false? (n "1001")))))
+    (testing "alternating zeroes beginning with zero"
+      (let [n (nfa-of alternating-zeroes-beginning-with-zero)]
+        (is (true? (n "0")))
+        (is (true? (n "010")))
+        (is (true? (n "000")))
+        (is (true? (n "01000")))
+        (is (true? (n "01010"))))))
+  (testing "two state nfa with epsilons"
+    (testing "zeroes followed by ones"
+      (let [n (nfa-of zeroes-followed-by-ones)]
+        (is (true? (n "0")))
+        (is (true? (n "01")))
+        (is (true? (n "00")))
+        (is (true? (n "001")))
+        (is (true? (n "0011")))
+        (is (true? (n "1")))
+				(is (true? (n "11")))
+        (is (false? (n "10")))
+        (is (false? (n "010")))
+        (is (false? (n "00110"))))))
+  (testing "multiple state nfas with epsilons"
+    (testing "zeros or ones"
+      (let [n (nfa-of zeroes-or-ones)]
+        (is (true? (n "1")))
+        (is (true? (n "0")))
+        (is (true? (n "11")))
+        (is (true? (n "00")))
+        (is (false? (n "10")))
+        (is (false? (n "01")))))
+    (testing "zeroes followed by ones or ones followed by zeroes"
+      (let [n (nfa-of zeroes-followed-by-ones-vice-versa)]
+        (is (true? (n "")))
+        (is (true? (n "0")))
+        (is (true? (n "1")))
+        (is (true? (n "00")))
+        (is (true? (n "11")))
+        (is (true? (n "01")))
+        (is (true? (n "10")))
+        (is (true? (n "0011")))
+        (is (true? (n "1100")))
+        (is (false? (n "101")))
+        (is (false? (n "010")))))))

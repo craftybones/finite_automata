@@ -53,6 +53,6 @@
                         reducer)
         epsilon-states (partial all-epsilon-states transition)
         init-states (dfa-mapper (epsilon-states #{q0}))
-        new-final-states (map dfa-mapper
-                              (intersections list-of-new-states final-states))]
-    (println dfa-mapper dfa-transition init-states new-final-states)))
+        new-final-states (into #{} (map dfa-mapper
+                                        (intersections list-of-new-states final-states)))]
+    (dfa new-states alphabet dfa-transition init-states new-final-states)))
