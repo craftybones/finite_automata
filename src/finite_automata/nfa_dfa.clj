@@ -52,15 +52,15 @@
   (let [reducer (reducer-from delta)
 				epsilon-states (states-reachable-via-epsilon delta)
         new-states (subsets q)
-        dfa-mapper (create-mapper new-states "x")
-        q0-dfa (dfa-mapper (epsilon-states #{q0}))
-        q-dfa (setify (map dfa-mapper new-states))
+        dfa-map (create-mapper new-states "x")
+        dfa-mapper (comp setify (partial map dfa-map))
+        q0-dfa (dfa-map (epsilon-states #{q0}))
+        q-dfa (dfa-mapper new-states)
         delta-dfa (create-new-transitions
-                        dfa-mapper
+                        dfa-map
                         new-states
                         alphabet
                         reducer)
-        final-states-dfa (setify
-                               (map dfa-mapper
-                                        (intersections new-states final-states)))]
+        final-states-dfa (dfa-mapper
+                          (intersections new-states final-states))]
     (dfa q-dfa alphabet delta-dfa q0-dfa final-states-dfa)))
