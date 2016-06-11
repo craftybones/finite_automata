@@ -33,7 +33,7 @@
   [mapper states alphabet reducer]
   (table-to-map
    (for [state states letter alphabet]
-  	  [(mapper state)
+     [(mapper state)
       letter
       (mapper (reducer state letter))])))
 
@@ -50,6 +50,7 @@
 
 (defn nfa-to-dfa [q alphabet delta q0 final-states]
   (let [reducer (reducer-from delta)
+        alphabet (to-digits alphabet)
 				epsilon-states (states-reachable-via-epsilon delta)
         new-states (subsets q)
         dfa-map (create-mapper new-states "x")

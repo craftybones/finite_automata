@@ -3,7 +3,7 @@
             [finite-automata.core :refer :all]
             [finite-automata.nfa-dfa :refer :all]))
 
-(def states #{:q1 :q2 :q3 :q4 :q5})
+(def states #{:q1 :q2 :q3 :q4 :q5 :q6 :q7})
 
 (def alphabet-set #{0 1})
 
@@ -77,6 +77,18 @@
   {:delta {:q1 {:ε #{:q2}} :q2 {:ε #{:q3}} :q3 {:ε #{:q1}}}
    :start-state :q1
    :final-states #{:q2 :q3}})
+
+(def alternate-with-same-begin-and-end
+  {:delta {:q1 {:ε #{:q2 :q5}}
+           :q2 {0 #{:q3}}
+           :q3 {1 #{:q4}}
+           :q4 {0 #{:q3}}
+           :q5 {1 #{:q6}}
+           :q6 {0 #{:q7}}
+           :q7 {1 #{:q6}}}
+   :start-state :q1
+   :final-states #{:q3 :q6}})
+
 
 (deftest nfa-test
   (testing "single state nfa"
@@ -153,4 +165,12 @@
         (is (true? (n "0011")))
         (is (true? (n "1100")))
         (is (false? (n "101")))
-        (is (false? (n "010")))))))
+        (is (false? (n "010")))))
+    (testing "alternate characters beginning and ending with same letter"
+      (let [n (nfa-of alternate-with-same-begin-and-end)]
+        (is (true? (n "0")))
+        (is (true? (n "010")))
+        (is (true? (n "01010")))
+        (is (true? (n "1")))
+        (is (true? (n "101")))
+        (is (true? (n "10101")))))))

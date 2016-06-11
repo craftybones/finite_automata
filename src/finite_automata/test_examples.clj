@@ -1,5 +1,6 @@
 (ns finite-automata.test-examples
-  (:require [finite-automata.core :as fa]))
+  (:require [finite-automata.core :as fa]
+            [finite-automata.nfa-dfa :as conv]))
 
 (def not-nil? (complement nil?))
 
@@ -11,11 +12,13 @@
   [delta]
   (reduce-kv #(assoc %1 %2 (convert-epsilons %3)) {} delta))
 
-(def automata-types {"dfa" fa/dfa "nfa" fa/nfa})
+(def automata-types {"dfa" fa/dfa
+                     "nfa" fa/nfa
+                     "nfa-to-dfa" conv/nfa-to-dfa})
 
 (defn tuple-from-map
-  [{:keys [states alphabet delta start-state final-states]}]
-  [states alphabet (convert-delta delta) start-state final-states])
+  [{:keys [states alphabets delta start-state final-states]}]
+  [states alphabets (convert-delta delta) start-state final-states])
 
 (defn create-fa
   [type tuple]
