@@ -40,19 +40,27 @@
 (defn intersections [all-states final-states]
   (filter (partial intersects? final-states) all-states))
 
+(defn reducer-from [delta]
+  (state-set-reducer (rtransition-fn delta)))
+
+(defn states-reachable-via-epsilon [delta]
+  (partial all-epsilon-states (rtransition-fn delta)))
+
+(def setify (partial into #{}))
+
 (defn nfa-to-dfa [q alphabet delta q0 final-states]
-  (let [transition (rtransition-fn delta)
-        list-of-new-states (subsets q)
-        dfa-mapper (create-mapper list-of-new-states "x")
-        new-states (into #{} (map dfa-mapper list-of-new-states))
-        reducer (state-set-reducer transition)
-        dfa-transition (create-new-transitions
+  (let [reducer (reducer-from delta)
+				epsilon-states (states-reachable-via-epsilon delta)
+        new-states (subsets q)
+        dfa-mapper (create-mapper new-states "x")
+        q0-dfa (dfa-mapper (epsilon-states #{q0}))
+        q-dfa (setify (map dfa-mapper new-states))
+        delta-dfa (create-new-transitions
                         dfa-mapper
-                        list-of-new-states
+                        new-states
                         alphabet
                         reducer)
-        epsilon-states (partial all-epsilon-states transition)
-        init-states (dfa-mapper (epsilon-states #{q0}))
-        new-final-states (into #{} (map dfa-mapper
-                                        (intersections list-of-new-states final-states)))]
-    (dfa new-states alphabet dfa-transition init-states new-final-states)))
+        final-states-dfa (setify
+                               (map dfa-mapper
+                                        (intersections new-states final-states)))]
+    (dfa q-dfa alphabet delta-dfa q0-dfa final-states-dfa)))
