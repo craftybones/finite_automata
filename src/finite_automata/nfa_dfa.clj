@@ -22,7 +22,7 @@
 
 (defn assoc-if-not-empty
   [coll [state alphabet transition]]
-  (if (not transition)
+  (if-not transition
     coll
     (assoc-in coll [state alphabet] transition)))
 
