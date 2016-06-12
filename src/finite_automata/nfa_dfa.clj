@@ -51,7 +51,7 @@
 (defn nfa-to-dfa [q alphabet delta q0 final-states]
   (let [reducer (reducer-from delta)
         alphabet (to-digits alphabet)
-				epsilon-states (states-reachable-via-epsilon delta)
+        epsilon-states (states-reachable-via-epsilon delta)
         new-states (subsets q)
         dfa-map (create-mapper new-states "x")
         dfa-mapper (comp setify (partial map dfa-map))
