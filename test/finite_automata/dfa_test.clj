@@ -33,7 +33,6 @@
    :start-state :q1
    :final-states #{:q1}})
 
-
 (deftest dfa-test
   (testing "single state dfa"
     (testing "any string"

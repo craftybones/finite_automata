@@ -89,7 +89,6 @@
    :start-state :q1
    :final-states #{:q3 :q6}})
 
-
 (deftest nfa-test
   (testing "single state nfa"
     (testing "any string"
@@ -140,7 +139,7 @@
         (is (true? (n "001")))
         (is (true? (n "0011")))
         (is (true? (n "1")))
-				(is (true? (n "11")))
+        (is (true? (n "11")))
         (is (false? (n "10")))
         (is (false? (n "010")))
         (is (false? (n "00110"))))))

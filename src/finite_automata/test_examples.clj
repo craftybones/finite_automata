@@ -30,14 +30,13 @@
   [{:keys [name type tuple pass-cases fail-cases]}]
   (let [f (create-fa type tuple)]
     (hash-map
- 			 :pass-cases ((group-by f pass-cases) false)
- 			 :fail-cases ((group-by f fail-cases) true))))
+     :pass-cases ((group-by f pass-cases) false)
+     :fail-cases ((group-by f fail-cases) true))))
 
 (defn run-fa-tests [tests]
   (map #(hash-map
          :name (:name %1)
          :results (run-fa-test %1)) tests))
-
 
 (defn all-failed [results]
   (filter #(or (not-nil? (get-in %1 [:results :pass-cases]))

@@ -26,7 +26,7 @@
 
 (defn states-reachable-from [transition current-states letter]
   (apply cset/union
-    (map (partial transition letter) current-states)))
+         (map (partial transition letter) current-states)))
 
 (defn state-set-reducer [transition]
   (let [epsilons (partial all-epsilon-states transition)
@@ -39,7 +39,7 @@
     (fn [string]
       (let [letters (to-digits string)]
         (contains? final-states
-          (reduce tran q0 letters))))))
+                   (reduce tran q0 letters))))))
 
 (defn nfa [q alphabet delta q0 final-states]
   (let [transition (rtransition-fn delta)
@@ -49,5 +49,5 @@
     (fn [string]
       (let [letters (to-digits string)]
         (intersects?
-          (reduce reducer init-states letters)
-          final-states)))))
+         (reduce reducer init-states letters)
+         final-states)))))

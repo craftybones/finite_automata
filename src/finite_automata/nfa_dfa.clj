@@ -16,7 +16,7 @@
 
 (defn create-mapper [coll prefix]
   (into (hash-map)
-	       (map-indexed (fn [idx itm]
+        (map-indexed (fn [idx itm]
                        [itm (keywordify prefix (inc idx))])
                      coll)))
 
@@ -58,10 +58,10 @@
         q0-dfa (dfa-map (epsilon-states #{q0}))
         q-dfa (dfa-mapper new-states)
         delta-dfa (create-new-transitions
-                        dfa-map
-                        new-states
-                        alphabet
-                        reducer)
+                   dfa-map
+                   new-states
+                   alphabet
+                   reducer)
         final-states-dfa (dfa-mapper
                           (intersections new-states final-states))]
     (dfa q-dfa alphabet delta-dfa q0-dfa final-states-dfa)))

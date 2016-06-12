@@ -77,7 +77,6 @@
    :start-state :q1
    :final-states #{:q2 :q3}})
 
-
 (deftest epsilon-test
   (testing "single epsilon transition between two states"
     (let [transition (from-delta-of zeroes-followed-by-ones)
@@ -92,7 +91,6 @@
     (let [from-delta (from-delta-of circular-epslion-transitions)
           epsilons (partial all-epsilon-states from-delta)]
       (is (= #{:q1 :q2 :q3} (epsilons #{:q1}))))))
-
 
 (deftest nfa-test
   (testing "single state nfa"
@@ -144,7 +142,7 @@
         (is (true? (n "001")))
         (is (true? (n "0011")))
         (is (true? (n "1")))
-				(is (true? (n "11")))
+        (is (true? (n "11")))
         (is (false? (n "10")))
         (is (false? (n "010")))
         (is (false? (n "00110"))))))
