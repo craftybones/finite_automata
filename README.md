@@ -1,36 +1,25 @@
 # finite_automata
 
-FIXME: description
-
-## Installation
-
-Download from http://example.com/FIXME.
+Simple finite automata library
 
 ## Usage
+First install the dependencies. While the finite automata core doesn't depend on any external libraries, [cheshire](https://github.com/dakrone/cheshire) is used to convert examples to JSON.
 
-FIXME: explanation
+```bash
+lein deps
+```
 
-    $ java -jar finite_automata-0.1.0-standalone.jar [args]
 
-## Options
+Run the tests
 
-FIXME: listing of options this app accepts.
+```bash
+lein test
+```
 
-## Examples
+Run the program
 
-...
+```bash
+lein run example.clj
+```
 
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2016 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+This will turn example.clj into an equivalent JSON file.
